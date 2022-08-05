@@ -1,0 +1,182 @@
+---
+- tasks:
+  - name: Install Windows Features
+    ansible.windows.win_optional_feature:
+    - name:
+      - Microsoft-Hyper-V-All
+      - Microsoft-Hyper-V
+      - Microsoft-Hyper-V-Management-Clients
+      - Microsoft-Hyper-V-Management-PowerShell
+      - Microsoft-Hyper-V-Hypervisor
+      - Microsoft-Hyper-V-Services
+      - NetFx3
+      - NetFx4-AdvSrvs
+      - NetFx4Extended-ASPNET45
+      - Containers
+      - Containers-HNS
+      - Containers-SDN
+      - Microsoft-Windows-Subsystem-Linux
+      state: present
+    register: win_feature
+
+  - name: Reboot if Windows Feature Updates Required It
+    win_reboot:
+    when: win_feature.reboot_required
+
+  - name: Install MS WSL Kernel
+    ansible.windows.win_package:
+      path: https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi   #WSL Kernel
+      state: present
+
+  - name: Ensure chocolatey is installed
+    win_chocolatey:
+      name: chocolatey
+      state: present
+
+  - name: Ensure packages are installed
+    win_chocolatey:
+      name:
+        - python
+        - adobereader
+        - googlechrome
+        - firefox
+        - python3
+        - autohotkey
+        - 7zip
+        - filezilla
+        - putty
+        - wireshark
+        - openssl
+        - docker-desktop
+        - golang
+        - pgadmin3
+        - mysql.workbench
+        - winmerge
+        - meld
+        - git
+        - graphviz
+        - yed
+        - dnscontrol
+        - gping
+        - github-desktop
+        - picassio
+        - keepass
+        - keepass-plugin-rdp
+        - mremoteng
+        - mobaxterm
+        - ultravnc
+        - nomachine
+        - tcpview
+        - stunnel
+        - au
+        - nettraffic
+        - windirstat
+        - lanbench
+        - netcat
+        - gpu-z
+        - cpu-z
+        - harddriveindicator
+        - hwinfo
+        - hwmonitor
+        - sharex
+      state: present
+      
+
+  - name: Ensure MS Tools are installed
+    win_chocolatey:
+      name:
+        - sql-server-management-studio
+        - vscode
+        - visualstudio2022community
+        - sysinternals
+        - office365business
+        - visualstudio2022-workload-python
+        - visualstudio2022-workload-netweb
+        - visualstudio2022-workload-manageddesktop
+        - visualstudio2022-workload-universal
+        - visualstudio2022-workload-data
+        - visualstudio2022-workload-node
+        - iisexpress
+        - sqllocaldb
+        - rdcman
+        - vscode-docker
+        - rsat
+      state: present
+      
+
+  - name: Ensure AWS Cloud Tools are installed     
+    win_chocolatey:
+      name: 
+        - awscli
+        - awstools.powershell
+        - s3browser
+      state: present
+      
+
+  - name: Ensure Azure Cloud Tools are installed
+    win_chocolatey:
+      name:
+        - azure-cli
+        - azure-cosmosdb-emulator
+        - microsoftazurestorageexplorer
+        - azure-functions-core-tools
+        - azure-data-studio
+        - azure-data-studio-sql-server-admin-pack
+        - vscode-azure-deploy
+        - azurestorageemulator
+        - az.powershell
+        - azuredatastudio-powershell
+        - azcopy
+        - aks-engine
+        - vscode-azurerepos
+        - vscode-azurerm-tools
+        - bicep
+        - visualstudio2022-workload-azure
+      state: present
+      
+
+  - name: Ensure Google Cloud Tools are installed
+    win_chocolatey:
+      name:
+        - gam
+        - vscode-cloud-code
+        - gsutil
+      state: present
+      
+  
+  - name: Ensure Hashicorp Tools are installed
+    win_chocolatey:
+      name: 
+        - terraform
+        - terraformer
+        - tflint
+        - terragrunt
+        - infracost
+        - packer
+        - vagrant
+        - vagrant-winrm-config
+        - vagrant-vmware-utility
+      state: present
+      
+
+  - name: Ensure Ansible Tools are installed
+    win_chocolatey:
+      name:
+        - vscode-ansible
+      state: present
+      
+
+  - name: Ensure Azure AD PS module is installed
+    win_psmodule:
+      name: AzureADPreview
+      
+
+  - name: Ensure Az Module PS is installed
+    win_psmodule:
+      name: Az
+      
+
+  - name: Install PIP Modules
+    ansible.windows.win_shell: 
+      C:\python310\python.exe -m pip install robotframework robotframework-sshlibrary robotframework-winrmlibrary diagrams dnspython monitorcontrol
+    

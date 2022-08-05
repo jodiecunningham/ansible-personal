@@ -1,0 +1,102 @@
+---
+- name: Ensure chocolatey is installed
+  win_chocolatey:
+      name: chocolatey
+      state: present
+
+- name: Ensure goggalaxy is installed
+  win_chocolatey:
+      name: goggalaxy
+- name: Ensure origin is installed
+  win_chocolatey:
+      name: origin
+- name: Ensure dolphin is installed
+  win_chocolatey:
+      name: dolphin
+- name: Ensure discord is installed
+  win_chocolatey:
+      name: discord
+# - name: Ensure battle.net is installed
+#   win_chocolatey:
+#       name: battle.net
+- name: Ensure epicgameslauncher is installed
+  win_chocolatey:
+      name: epicgameslauncher
+- name: Ensure gamesavemanager is installed
+  win_chocolatey:
+      name: gamesavemanager
+- name: Ensure borderlessgaming is installed
+  win_chocolatey:
+      name: borderlessgaming
+- name: Ensure mame is installed
+  win_chocolatey:
+      name: mame
+- name: Ensure snes9x is installed
+  win_chocolatey:
+      name: snes9x
+- name: Ensure scummvm is installed
+  win_chocolatey:
+      name: scummvm
+- name: Ensure visualboyadvance is installed
+  win_chocolatey:
+      name: visualboyadvance
+- name: Ensure nestopia is installed
+  win_chocolatey:
+      name: nestopia
+- name: Ensure zsnes is installed
+  win_chocolatey:
+      name: zsnes
+- name: Ensure ioquake3 is installed
+  win_chocolatey:
+      name: ioquake3
+- name: Ensure fpsmonitor is installed
+  win_chocolatey:
+      name: fpsmonitor
+- name: Ensure dbgl is installed
+  win_chocolatey:
+      name: dbgl
+# - name: Ensure launchbox is installed
+#   win_chocolatey:
+#       name: launchbox
+# - name: Ensure amazongames is installed
+#   win_chocolatey:
+#       name: amazongames
+# - name: Ensure rockstar-launcher is installed
+#   win_chocolatey:
+#       name: rockstar-launcher
+# - name: Ensure nvidia-geforce-now is installed
+#   win_chocolatey:
+#       name: nvidia-geforce-now
+# - name: Ensure manycam is installed
+#   win_chocolatey:
+#       name: manycam
+- name: Ensure twitch is installed
+  win_chocolatey:
+      name: twitch
+- name: Ensure obs-studio is installed
+  win_chocolatey:
+      name: obs-studio
+- name: Ensure sharex is installed
+  win_chocolatey:
+      name: sharex
+- name: Ensure hwinfo is installed
+  win_chocolatey:
+      name: hwinfo
+- name: Ensure cpu-z is installed
+  win_chocolatey:
+      name: cpu-z
+- name: Ensure gpu-z is installed
+  win_chocolatey:
+      name: gpu-z
+- name: Ensure hwmonitor is installed
+  win_chocolatey:
+      name: hwmonitor
+- name: Ensure perfview is installed
+  win_chocolatey:
+      name: perfview
+- name: Ensure furmark is installed
+  win_chocolatey:
+      name: furmark
+- name: Ensure valley-benchmark is installed
+  win_chocolatey:
+      name: valley-benchmark
