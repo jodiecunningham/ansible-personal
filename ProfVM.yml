@@ -1,9 +1,9 @@
 ---
 - name: Set up prof-tech Windows machine applications and tools
-  become: True
+  become: yes
   become_method: runas
-  become_user: Jodie
+  become_user: vagrant
 
-  hosts: profvms
+  hosts: default
   roles: 
     - role: profvm 

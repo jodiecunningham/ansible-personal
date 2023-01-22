@@ -1,11 +1,4 @@
-[profvms]
-10.0.40.25
-
-[gamingvms]
-10.0.40.30
-
 [all:vars]
-ansible_user=.\Jodie
+ansible_user=.\vagrant
+ansible_password=vagrant
 ansible_connection=winrm
-ansible_port=5985
-ansible_winrm_transport=ntlm

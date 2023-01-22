@@ -79,18 +79,18 @@
 - name: Ensure sharex is installed
   win_chocolatey:
       name: sharex
-- name: Ensure hwinfo is installed
-  win_chocolatey:
-      name: hwinfo
+        #- name: Ensure hwinfo is installed
+        # win_chocolatey:
+        # name: hwinfo
 - name: Ensure cpu-z is installed
   win_chocolatey:
       name: cpu-z
 - name: Ensure gpu-z is installed
   win_chocolatey:
       name: gpu-z
-- name: Ensure hwmonitor is installed
-  win_chocolatey:
-      name: hwmonitor
+        #- name: Ensure hwmonitor is installed
+        #win_chocolatey:
+        # name: hwmonitor
 - name: Ensure perfview is installed
   win_chocolatey:
       name: perfview

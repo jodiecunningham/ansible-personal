@@ -1,9 +1,9 @@
 --- 
 - name: Set up Windows gaming rig with launchers, tools and emulators
-  become: True
+  become: yes
   become_method: runas
-  become_user: Jodie
+  become_user: vagrant
 
-  hosts: gamingvms
+  hosts: default
   roles: 
     - role: gamingvm 
