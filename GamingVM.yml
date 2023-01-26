@@ -1,6 +1,6 @@
 --- 
 - name: Set up Windows gaming rig with launchers, tools and emulators
-  become: yes
+  become: true
   become_method: runas
   become_user: vagrant
 

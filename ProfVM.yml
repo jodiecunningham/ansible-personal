@@ -1,6 +1,6 @@
 ---
 - name: Set up prof-tech Windows machine applications and tools
-  become: yes
+  become: true
   become_method: runas
   become_user: vagrant
 
