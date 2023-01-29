@@ -1,218 +1,213 @@
 ---
-- name: Install Windows Features
-  ansible.windows.win_optional_feature:
-    name:
-      - Microsoft-Hyper-V-All
-      - Microsoft-Hyper-V
-      - Microsoft-Hyper-V-Management-Clients
-      - Microsoft-Hyper-V-Management-PowerShell
-      - Microsoft-Hyper-V-Hypervisor
-      - Microsoft-Hyper-V-Services
-      - NetFx3
-      - NetFx4-AdvSrvs
-      - NetFx4Extended-ASPNET45
-      - Containers
-      - Containers-HNS
-      - Containers-SDN
-      - Microsoft-Windows-Subsystem-Linux
-    state: present
-  register: win_feature
-  retries: 10
-  delay: 10
+- name: Install part 1 - The phantom Windows features and OS packages
+  tags: installpt1
+  block:
+  - name: Install Windows Features
+    ansible.windows.win_optional_feature:
+      name:
+        - Microsoft-Hyper-V-All
+        - Microsoft-Hyper-V
+        - Microsoft-Hyper-V-Management-Clients
+        - Microsoft-Hyper-V-Management-PowerShell
+        - Microsoft-Hyper-V-Hypervisor
+        - Microsoft-Hyper-V-Services
+        - Microsoft-Hyper-V-Tools-All
+        - NetFx3
+        - NetFx4-AdvSrvs
+        - NetFx4Extended-ASPNET45
+        - Containers
+        - Containers-HNS
+        - Containers-SDN
+        - Containers-DisposableClientVM
+        - Microsoft-Windows-Subsystem-Linux
+        - HypervisorPlatform
+      state: present
+    register: win_feature
+    retries: 10
+    delay: 10
 
-- name: Reboot if Windows Feature Updates Required It
-  win_reboot:
-  when: win_feature.reboot_required
+  - name: Reboot if Windows Feature Updates Required It
+    win_reboot:
+    when: win_feature.reboot_required
 
-- name: Install MS WSL Kernel
-  ansible.windows.win_package:
-    path: https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi   #WSL Kernel
-    state: present
-  register: installmswslkernel
-  retries: 10
-  delay: 10
+  - name: Install MS WSL Kernel
+    ansible.windows.win_package:
+      path: https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
+      state: present
+    register: installmswslkernel
+    retries: 10
+    delay: 10
 
-- name: Ensure chocolatey is installed
-  win_chocolatey:
-    name: chocolatey
-    state: present
-  register: installchocolatey
-  retries: 10
-  delay: 10
+  - name: Ensure chocolatey is installed
+    win_chocolatey:
+      name: chocolatey
+      state: present
+    register: installchocolatey
+    retries: 10
+    delay: 10
 
-- name: Ensure the required NuGet package provider version is installed
-  ansible.windows.win_shell: Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force
-  register: installnuget
-  retries: 10
-  delay: 10
+  - name: Ensure the required NuGet package provider version is installed
+    ansible.windows.win_shell: Find-PackageProvider -Name Nuget -ForceBootstrap -IncludeDependencies -Force
+    register: installnuget
+    retries: 10
+    delay: 10
 
-- name: Ensure packages are installed
-  win_chocolatey:
-    name:
-      - adobereader
-      - googlechrome
-      - firefox
-      - autohotkey
-      - 7zip
-      - filezilla
-      - putty
-      - wireshark
-      - openssl
-      - docker-desktop
-      - golang
-      - pgadmin3
-      - mysql.workbench
-      - winmerge
-      - meld
-      - git
-      - graphviz
-      - yed
-      - dnscontrol
-      - gping
-      - github-desktop
-      - picassio
-      - keepass
-      - keepass-plugin-rdp
-      - mremoteng
-      - mobaxterm
-      - ultravnc
-      - nomachine
-      - tcpview
-      - stunnel
-      - au
-      - nettraffic
-      - windirstat
-      - lanbench
-      - netcat
-      - gpu-z
-      - cpu-z
-      - harddriveindicator
-      - hwinfo
-      - hwmonitor
-      - sharex
-    state: present
-  register: installpackages
-  retries: 10
-  delay: 10
+- name: Install part 2 - Attack of the chocolatey packages
+  tags: installpt1
+  block:
+    - name: Ensure packages are installed
+      win_chocolatey:
+        name:
+          - adobereader
+          - googlechrome
+          - firefox
+          - autohotkey
+          - 7zip
+          - filezilla
+          - putty
+          - wireshark
+          - openssl
+          - docker-desktop
+          - golang
+          - pgadmin3
+          - mysql.workbench
+          - winmerge
+          - meld
+          - git
+          - graphviz
+          - yed
+          - dnscontrol
+          - gping
+          - github-desktop
+          - picassio
+          - keepass
+          - keepass-plugin-rdp
+          - mremoteng
+          - mobaxterm
+          - ultravnc
+          - nomachine
+          - tcpview
+          - stunnel
+          - au
+          - nettraffic
+          - windirstat
+          # - lanbench
+          - netcat
+          - gpu-z
+          - cpu-z
+          - harddriveindicator
+          - hwinfo
+          - hwmonitor
+          - sharex
+        state: present
+      register: installpackages
+      retries: 10
+      delay: 10
 
-    
+- name: Install part 3 - Revenge of the MS apps
+  tags: installpt3
+  block:
+    - name: Ensure MS Tools are installed
+      win_chocolatey:
+        name:
+          - sql-server-management-studio
+          - vscode
+          # - visualstudio2022community
+          - sysinternals
+          # - office365proplus
+          # - visualstudio2022-workload-python
+          # - visualstudio2022-workload-netweb
+          # - visualstudio2022-workload-manageddesktop
+          # - visualstudio2022-workload-universal
+          # - visualstudio2022-workload-data
+          # - visualstudio2022-workload-node
+          # - iisexpress
+          - sqllocaldb
+          # - rdcman
+          # - vscode-docker
+          - rsat
+        state: present
+      register: installmstools
+      retries: 10
+      delay: 10
 
-- name: Ensure MS Tools are installed
-  win_chocolatey:
-    name:
-      - sql-server-management-studio
-      - vscode
-      - visualstudio2022community
-      - sysinternals
-      - office365business
-      - visualstudio2022-workload-python
-      - visualstudio2022-workload-netweb
-      - visualstudio2022-workload-manageddesktop
-      - visualstudio2022-workload-universal
-      - visualstudio2022-workload-data
-      - visualstudio2022-workload-node
-      - iisexpress
-      - sqllocaldb
-      # - rdcman
-      - vscode-docker
-      - rsat
-    state: present
-  register: installmstools
-  retries: 10
-  delay: 10  
+- name: Install part 4 - A new AWS install
+  tags: installpt4
+  block:
+    - name: Ensure AWS Cloud Tools are installed
+      win_chocolatey:
+        name:
+          - awscli
+          - awstools.powershell
+          - s3browser
+        state: present
+      register: installawstools
+      retries: 10
+      delay: 10
 
-- name: Ensure AWS Cloud Tools are installed     
-  win_chocolatey:
-    name: 
-      - awscli
-      - awstools.powershell
-      - s3browser
-    state: present
-  register: installawstools
-  retries: 10
-  delay: 10
-    
+- name: Install part 5 - The Azure Strikes Back
+  tags: installpt5
+  block:
+    - name: Ensure Azure Cloud Tools are installed
+      win_chocolatey:
+        name:
+          - azure-cli
+          - azure-cosmosdb-emulator
+          - microsoftazurestorageexplorer
+          - azure-functions-core-tools
+          - azure-data-studio
+          - azure-data-studio-sql-server-admin-pack
+          - vscode-azure-deploy
+          - azurestorageemulator
+          - az.powershell
+          - azuredatastudio-powershell
+          - azcopy
+          - aks-engine
+          - vscode-azurerepos
+          - vscode-azurerm-tools
+          - bicep
+          # - visualstudio2022-workload-azure
+        state: present
+      register: installazuretools
+      retries: 10
+      delay: 10
 
-- name: Ensure Azure Cloud Tools are installed
-  win_chocolatey:
-    name:
-      - azure-cli
-      - azure-cosmosdb-emulator
-      - microsoftazurestorageexplorer
-      - azure-functions-core-tools
-      - azure-data-studio
-      - azure-data-studio-sql-server-admin-pack
-      - vscode-azure-deploy
-      - azurestorageemulator
-      - az.powershell
-      - azuredatastudio-powershell
-      - azcopy
-      - aks-engine
-      - vscode-azurerepos
-      - vscode-azurerm-tools
-      - bicep
-      - visualstudio2022-workload-azure
-    state: present
-  register: installazuretools
-  retries: 10
-  delay: 10
-    
+- name: Install part 6 - Return of the Multicloud
+  tags: installpt6
+  block:
+    - name: Ensure Google Cloud Tools are installed
+      win_chocolatey:
+        name:
+          # - gam
+          - vscode-cloud-code
+          - gsutil
+        state: present
+      register: installgoogletools
+      retries: 10
+      delay: 10
 
-- name: Ensure Google Cloud Tools are installed
-  win_chocolatey:
-    name:
-      - gam
-      - vscode-cloud-code
-      - gsutil
-    state: present
-  register: installgoogletools
-  retries: 10
-  delay: 10
-    
+    - name: Ensure Hashicorp Tools are installed
+      win_chocolatey:
+        name:
+          - terraform
+          - terraformer
+          - tflint
+          - terragrunt
+          - infracost
+          - packer
+          - vagrant
+          - vagrant-winrm-config
+          - vagrant-vmware-utility
+        state: present
+      register: installhcptools
+      retries: 10
+      delay: 10
 
-- name: Ensure Hashicorp Tools are installed
-  win_chocolatey:
-    name: 
-      - terraform
-      - terraformer
-      - tflint
-      - terragrunt
-      - infracost
-      - packer
-      - vagrant
-      - vagrant-winrm-config
-      - vagrant-vmware-utility
-    state: present
-  register: installhcptools
-  retries: 10
-  delay: 10
-    
-
-- name: Ensure Ansible Tools are installed
-  win_chocolatey:
-    name:
-      - vscode-ansible
-    state: present
-  register: installansibletools
-  retries: 10
-  delay: 10
-    
-
-# - name: Ensure Azure AD PS module is installed
-#   community.windows.win_psmodule:
-#     name: AzureADPreview
-#     state: present
-#     accept_license: True
-#   register: installazureadps
-#   retries: 10
-#   delay: 10
-    
-
-# - name: Ensure Az Module PS is installed
-#   community.windows.win_psmodule:
-#     name: Az
-#     state: present
-#     # accept_license: True
-#   register: installazmodule
-#   retries: 10
-#   delay: 10
+    - name: Ensure Ansible Tools are installed
+      win_chocolatey:
+        name:
+          - vscode-ansible
+        state: present
+      register: installansibletools
+      retries: 10
+      delay: 10
